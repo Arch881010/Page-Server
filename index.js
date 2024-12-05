@@ -56,7 +56,9 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Example route
+// The following are a bunch of test routes. Feel free to comment out if you plan on using these to test.
+
+/*
 app.get("/testy", (req, res) => {
 	req.viewer_pool.query(`SELECT * FROM ${table}`, (error, results) => {
 		if (error) {
@@ -90,6 +92,7 @@ app.get("/testy3", (req, res) => {
 		}
 	);
 });
+*/
 
 app.get("/public", express.static(getPath("/public")));
 // /public/other/yap.txt
