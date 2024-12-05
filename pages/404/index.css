@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: url('https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif') no-repeat center center fixed;
+    background-size: cover;
+}
+.container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+}
+.container h1 {
+    font-size: 5em;
+    margin: 0;
+    color: #333;
+}
+.container p {
+    font-size: 1.5em;
+    color: #666;
+}
+.container a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+}
+.container a:hover {
+    background-color: #0056b3;
+}

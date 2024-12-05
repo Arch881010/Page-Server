@@ -1,0 +1,24 @@
+{
+  "name": "sst-collector",
+  "version": "0.0.1",
+  "description": "The data collector for an ISEF project at ASMSA.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arch881010/SST-Collector.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Arch881010/SST-Collector/issues"
+  },
+  "homepage": "https://github.com/Arch881010/SST-Collector#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mysql2": "^3.11.4"
+  }
+}
