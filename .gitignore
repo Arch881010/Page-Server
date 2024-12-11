@@ -129,6 +129,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Ignore any new routes that may have been added locally
+routes
+
 # Some extra stuff that is here locally but not for production
 login_data
 sql_commands
