@@ -1,10 +1,10 @@
 <!-- @format -->
 
-# SST-Collector
+# Page Server
 
 ## Description
 
-The SST-Collector is a data collection tool for an ISEF project at ASMSA. It is built using Node.js, Express, and MySQL.
+This Page Server is a simple server that works in pages.
 
 ## Installation
 
@@ -21,16 +21,8 @@ The SST-Collector is a data collection tool for an ISEF project at ASMSA. It is 
    npm install
    ```
 
-3. Create a `.env` file in the root directory and add your environment variables. You can use the `example.env` file as a reference:
-   ```env
-   viewer_user=your_viewer_user
-   viewer_password=your_viewer_password
-   writer_user=your_writer_user
-   writer_password=your_writer_password
-   database=your_database_name
-   port=your_port
-   table=your_table_name
-   ```
+3. Copy the `example.env` and rename it to `.env`.
+   
 
 ## Usage
 

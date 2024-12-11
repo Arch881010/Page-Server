@@ -7,10 +7,11 @@ const app = express();
 const getPath = require("./modules/getPath");
 const getFormattedDateTime = require("./modules/getFormattedDateTime");
 const fs = require("node:fs");
+const keywords = require("./modules/getKeywords");
 
 // Our page's path
 const page_path = getPath("/pages/");
-console.log(page_path);
+console.log("Serving pages from:", page_path);
 
 // Our paths (when we launch)
 const pages = fs.readdirSync(page_path).filter((path) => !path.includes("."));
@@ -18,39 +19,63 @@ pages.push("public");
 
 // Dotenv config
 require("dotenv").config();
-const host = process.env["host"];
-const viewer_user = process.env["viewer_user"];
-const viewer_password = process.env["viewer_password"];
-const writer_user = process.env["writer_user"];
-const writer_password = process.env["writer_password"];
 
-const database = process.env["database"];
+sql_accounts = {};
+sql_details = {};
+
 const port = process.env["port"];
-const table = process.env["table"];
+const sqlStatus = process.env["sql"];
 
-// Create a connection pool
-const viewer_pool = mysql.createPool({
-	connectionLimit: 10, // Adjust the limit as needed
-	host: host,
-	user: viewer_user,
-	password: viewer_password,
-	database: database,
-});
+if (!keywords["disabled"].includes(sqlStatus)) {
+	console.log("SQL is enabled, saving users.");
+	const host = process.env["host"];
+	const viewer_user = process.env["viewer_user"];
+	const viewer_password = process.env["viewer_password"];
+	const writer_user = process.env["writer_user"];
+	const writer_password = process.env["writer_password"];
+	const database = process.env["database"];
 
-const writer_pool = mysql.createPool({
-	connectionLimit: 10, // Adjust the limit as needed
-	host: host,
-	user: writer_user,
-	password: writer_password,
-	database: database,
-});
+	const viewer_pool = mysql.createPool({
+		connectionLimit: 10, // Adjust the limit as needed
+		host: host,
+		user: viewer_user,
+		password: viewer_password,
+		database: database,
+	});
+
+	const writer_pool = mysql.createPool({
+		connectionLimit: 10, // Adjust the limit as needed
+		host: host,
+		user: writer_user,
+		password: writer_password,
+		database: database,
+	});
+
+	sql_accounts = {
+		viewer: viewer_pool,
+		writer: writer_pool,
+	};
+
+	sql = {
+		database: database,
+		table: process.env["table"],
+	};
+}
 
 // Middleware to handle MySQL connection
 app.use((req, res, next) => {
-	req.viewer_pool = viewer_pool;
-	if (req.method == "POST" || true) req.writer_pool = writer_pool;
-	next();
-	console.log(req.url);
+	if (sql_accounts.length != 2) {
+		next();
+		req.sql = false;
+		return;
+	} else {
+		req.viewer_pool = viewer_pool;
+		if (req.method == "POST" || true) req.writer_pool = writer_pool;
+		next();
+		req.sql = true;
+		//console.log(req.url);
+		return;
+	}
 });
 
 app.use(express.json());
@@ -60,7 +85,8 @@ app.use(express.urlencoded({ extended: true }));
 
 /*
 app.get("/testy", (req, res) => {
-	req.viewer_pool.query(`SELECT * FROM ${table}`, (error, results) => {
+	if(!req.sql) return res.status(500).json({error: "SQL is disabled."});
+	req.viewer_pool.query(`SELECT * FROM ${sql.table}`, (error, results) => {
 		if (error) {
 			return res.status(500).send(error);
 		}
@@ -69,9 +95,10 @@ app.get("/testy", (req, res) => {
 });
 
 app.get("/testy2", (req, res) => {
+	if(!req.sql) return res.status(500).json({error: "SQL is disabled."});
 	const ts = getFormattedDateTime();
 	req.writer_pool.query(
-		`INSERT INTO ${table} (id, answers, expected_answers, ts) VALUES (NULL, 'Y', 'X', '${ts}')`,
+		`INSERT INTO ${sql.table} (id, answers, expected_answers, ts) VALUES (NULL, 'Y', 'X', '${ts}')`,
 		(error, results) => {
 			if (error) {
 				return res.status(500).send(error);
@@ -82,8 +109,9 @@ app.get("/testy2", (req, res) => {
 });
 
 app.get("/testy3", (req, res) => {
+	if(!req.sql) return res.status(500).json({error: "SQL is disabled."});
 	req.writer_pool.query(
-		`DELETE FROM ${table}`,
+		`DELETE FROM ${sql.table}`,
 		(error, results) => {
 			if (error) {
 				return res.status(500).send(error);
@@ -120,6 +148,8 @@ app.get("*", (req, res, next) => {
 	last = file_split.length - 1;
 	const file_suffix = file_split[last];
 
+	last = split_path.length - 1;
+
 	let suffix = file_suffix;
 
 	// If suffix isn't included, change it to html
@@ -133,7 +163,7 @@ app.get("*", (req, res, next) => {
 
 	const path = getPath(split_path.join("/"));
 
-	console.log(path);
+	//console.log(path);
 	if (!fs.existsSync(path)) {
 		next();
 		return;
@@ -148,19 +178,16 @@ app.get("*", (req, res) => {
 	res.sendFile(filePath);
 });
 
-
 // Our post requests handler(s)
-app.post('/login', (req, res) => {
-	console.log(req.body);
+app.post("/login", (req, res) => {
+	//console.log(req.body);
 	const { accessKey } = req.body;
 	if (accessKey) {
-		res.send('You are logged in');
+		res.send("You are logged in");
 	} else {
-		res.send('Username or password incorrect');
+		res.send("Username or password incorrect");
 	}
 });
-
-
 
 app.listen(port, () => {
 	console.log(`Server running at http://localhost:${port}`);
