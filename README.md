@@ -12,16 +12,22 @@ This Page Server is a simple server that works in pages.
 
    ```sh
    git clone https://github.com/Arch881010/Page-Server.git
-   cd SST-Collector
+   cd Page-Server
+   ```
+   OR if using Github's Offical CLI
+   
+   ```sh
+   gh repo clone Arch881010/Page-Server
+   cd Page-Server
    ```
 
-2. Install the dependencies:
+3. Install the dependencies:
 
    ```sh
    npm install
    ```
 
-3. Copy the `example.env` and rename it to `.env`.
+4. Copy the `example.env` and rename it to `.env`.
    
 
 ## Usage
