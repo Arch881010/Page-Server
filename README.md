@@ -11,7 +11,7 @@ This Page Server is a simple server that works in pages.
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/Arch881010/SST-Collector.git
+   git clone https://github.com/Arch881010/Page-Server.git
    cd SST-Collector
    ```
 
