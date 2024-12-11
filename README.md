@@ -6,6 +6,13 @@
 
 This Page Server is a simple server that works in pages.
 
+## Note
+
+This requires Node.js 22 or newer.
+Unless this gets rewrote into esm... which I don't feel like doing it.
+(!): Experimental!! This will be changed eventually so that there isn't an experimental warning.
+(You'll be able to toggle chalk in the future, and with this toggle, this'll let older versions work as well.)
+
 ## Installation
 
 1. Clone the repository:
@@ -14,21 +21,21 @@ This Page Server is a simple server that works in pages.
    git clone https://github.com/Arch881010/Page-Server.git
    cd Page-Server
    ```
+
    OR if using Github's Offical CLI
-   
+
    ```sh
    gh repo clone Arch881010/Page-Server
    cd Page-Server
    ```
 
-3. Install the dependencies:
+2. Install the dependencies:
 
    ```sh
    npm install
    ```
 
-4. Copy the `example.env` and rename it to `.env`.
-   
+3. Copy the `example.env` and rename it to `.env`.
 
 ## Usage
 

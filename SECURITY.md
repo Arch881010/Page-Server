@@ -2,8 +2,6 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -12,8 +10,9 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+If you encounter an sercurity risk or vulnerability:  
+Email one of the following:  
+[page-server@arch1010.dev](mailto:page-server@arch1010.dev)  
+[vulnerabilities@arch1010.dev](mailto:vulnerabilities@arch1010.dev)  
+[arch1010@pm.me](mailto:arch1010@pm.me)  
+(If you email either of the last two, please put in the subject "Vulnerability: Page-Server on Github")

@@ -1,7 +1,7 @@
 {
-  "name": "sst-collector",
-  "version": "0.0.1",
-  "description": "The data collector for an ISEF project at ASMSA.",
+  "name": "page-server",
+  "version": "1.0.0",
+  "description": "A web server that works like a page server, where each file/folder is a \"page\".",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Arch881010/SST-Collector#readme",
   "dependencies": {
+    "chalk": "^5.3.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "mysql2": "^3.11.4"

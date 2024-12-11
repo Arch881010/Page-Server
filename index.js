@@ -3,6 +3,7 @@
 // Our imports
 const express = require("express");
 const mysql = require("mysql2");
+const chalk = require("chalk").chalkStderr; // <-- This is NOT really safe. It works because nodejs 22+ can require() esm models
 const app = express();
 const getPath = require("./modules/getPath");
 const getFormattedDateTime = require("./modules/getFormattedDateTime");
@@ -11,7 +12,7 @@ const keywords = require("./modules/getKeywords");
 
 // Our page's path
 const page_path = getPath("/pages/");
-console.log("Serving pages from:", page_path);
+console.log(chalk.blue("Serving pages from:"), page_path);
 
 // Our paths (when we launch)
 const pages = fs.readdirSync(page_path).filter((path) => !path.includes("."));
@@ -27,7 +28,7 @@ const port = process.env["port"];
 const sqlStatus = process.env["sql"];
 
 if (!keywords["disabled"].includes(sqlStatus)) {
-	console.log("SQL is enabled, saving users.");
+	console.log(chalk.green("SQL is enabled, saving users."));
 	const host = process.env["host"];
 	const viewer_user = process.env["viewer_user"];
 	const viewer_password = process.env["viewer_password"];
@@ -60,7 +61,7 @@ if (!keywords["disabled"].includes(sqlStatus)) {
 		database: database,
 		table: process.env["table"],
 	};
-}
+} 
 
 // Middleware to handle MySQL connection
 app.use((req, res, next) => {
@@ -81,49 +82,33 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// The following are a bunch of test routes. Feel free to comment out if you plan on using these to test.
-
-/*
-app.get("/testy", (req, res) => {
-	if(!req.sql) return res.status(500).json({error: "SQL is disabled."});
-	req.viewer_pool.query(`SELECT * FROM ${sql.table}`, (error, results) => {
-		if (error) {
-			return res.status(500).send(error);
-		}
-		res.json(results);
-	});
-});
-
-app.get("/testy2", (req, res) => {
-	if(!req.sql) return res.status(500).json({error: "SQL is disabled."});
-	const ts = getFormattedDateTime();
-	req.writer_pool.query(
-		`INSERT INTO ${sql.table} (id, answers, expected_answers, ts) VALUES (NULL, 'Y', 'X', '${ts}')`,
-		(error, results) => {
-			if (error) {
-				return res.status(500).send(error);
-			}
-			return res.json(results);
-		}
-	);
-});
-
-app.get("/testy3", (req, res) => {
-	if(!req.sql) return res.status(500).json({error: "SQL is disabled."});
-	req.writer_pool.query(
-		`DELETE FROM ${sql.table}`,
-		(error, results) => {
-			if (error) {
-				return res.status(500).send(error);
-			}
-			return res.json(results);
-		}
-	);
-});
-*/
-
 app.get("/public", express.static(getPath("/public")));
-// /public/other/yap.txt
+
+// For any extra user created routes, we'll load them here.
+console.log(chalk.yellow("\nLoading user routes...\n"));
+
+fs.readdirSync(getPath("/routes")).forEach((file) => {
+	if (file.endsWith(".js")) {
+		let log_information = true;
+		const router = require(getPath(`/routes/${file}`));
+		if (typeof router == "object") {
+			if (router.path) {
+				app.use(router.path, router.router);
+			} else {
+				console.log(
+					chalk.red("Could not load"),
+					file,
+					"because, since it's an object, it needs a path.\nIf you'd rather not have a path, return only the router."
+				);
+				log_information = false;
+			}
+		} else {
+			app.use(router);
+		}
+		if (log_information) console.log(chalk.green("Loaded"), file);
+	}
+});
+console.log(chalk.yellow("\nRoutes loaded.\n"));
 
 app.get("*", (req, res, next) => {
 	let split_path = [];
@@ -189,6 +174,14 @@ app.post("/login", (req, res) => {
 	}
 });
 
+// Our notice
+console.log(chalk.gray.redBright("Remember: NodeJS is experimental when it comes to requiring ESM modules (like chalk@lts). \nYou can wait for NodeJS 22+ to leave experimental phase OR until this is updated to have a toggle to do so.\n"));
+if (!keywords["disabled"].includes("sql")) {
+    console.log(chalk.gray("SQL is disabled. Are you sure it's meant to be disabled?"));
+} else {
+    console.log(chalk.green("SQL is enabled. Users are saved."));
+}
+
 app.listen(port, () => {
-	console.log(`Server running at http://localhost:${port}`);
+	console.log(chalk.cyan(`Server running at http://localhost:${port}`));
 });
